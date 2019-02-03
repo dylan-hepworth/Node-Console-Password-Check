@@ -1,5 +1,6 @@
 const readline = require('readline');
 const Writable = require('stream').Writable;
+const fs = require('fs');
 
 let username = '';
 let password = '';
@@ -64,14 +65,28 @@ const reset = () => {
 
 const main = async () => {
     reset();
-    
+
     await setUsername();
     await setPass();
     await confirmPass();
     await checkPasswords();
     
     reset();
-    console.log(`Username: ${username}\nPassword: ${password}`);
+
+    const configData = {
+        "username": username,
+        "password": password
+    };
+
+    fs.writeFile("config.json", JSON.stringify(configData), (err) => {
+        if (err) {
+            return console.log(err);
+            rl.close();
+        }
+    
+        console.log("Config file saved!");
+    }); 
+
     rl.close();
 }
 
